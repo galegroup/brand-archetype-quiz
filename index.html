@@ -8,22 +8,22 @@
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
 
 :root{
-  --ink:#23231F;
-  --parchment:#F4EFE4;
-  --card:#FFFDF8;
-  --brass:#A9793B;
-  --teal:#2E5E52;
-  --line:rgba(35,35,31,0.14);
-  --muted:#6B675C;
+  --ink:#173240;
+  --parchment:#F4FBFD;
+  --card:#FFFFFF;
+  --brass:#EEBA2B;
+  --teal:#E01581;
+  --line:rgba(23,50,64,0.14);
+  --muted:#5B7480;
 
-  --sage:#2E5E52;
-  --explorer:#C1622D;
-  --hero:#9C2B2B;
-  --caregiver:#B5697A;
-  --creator:#6B4E8E;
-  --ruler:#A9793B;
-  --jester:#C99A1E;
-  --everyman:#46607A;
+  --sage:#2E7C93;
+  --explorer:#EEBA2B;
+  --hero:#E01581;
+  --caregiver:#F3A9CE;
+  --creator:#173250;
+  --ruler:#C79420;
+  --jester:#F0509F;
+  --everyman:#8FD3E3;
 }
 
 *{box-sizing:border-box;}
@@ -93,8 +93,8 @@ h1,h2,h3{
 button.primary{
   margin-top:26px;
   width:100%;
-  background:var(--ink);
-  color:var(--parchment);
+  background:var(--teal);
+  color:#FFFFFF;
   border:none;
   border-radius:4px;
   padding:15px 20px;
@@ -160,9 +160,9 @@ button.primary:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
 }
 .scale-btn:hover{border-color:var(--brass);}
 .scale-btn.selected{
-  background:var(--ink);
-  border-color:var(--ink);
-  color:var(--parchment);
+  background:var(--teal);
+  border-color:var(--teal);
+  color:#FFFFFF;
   transform:scale(1.08);
 }
 .scale-caption{
@@ -527,9 +527,11 @@ function renderResults(){
         </div>
       </div>
       <div class="email-row">
-        <button class="primary" id="downloadBtn">Save my results as a image</button>
+        <button class="primary" id="downloadBtn">Save my results (picture)</button>
       </div>
       <div class="restart-row">
+        <button id="emailBtn">or email it to yourself instead</button>
+        <span class="dot-sep">&middot;</span>
         <button id="restartBtn">Take it again</button>
       </div>
     </div>
@@ -589,7 +591,7 @@ function downloadResultImage(btn){
   }).catch(()=>{
     btn.textContent = originalText;
     btn.disabled = false;
-    alert("Sorry, the picture couldn't be created.");
+    alert("Sorry, the picture couldn't be created. Try the email option instead.");
   });
 }
 
@@ -624,7 +626,9 @@ document.getElementById("app").addEventListener("click", (e)=>{
     }, 180);
     render();
   }
-  
+  else if(e.target.id === "emailBtn"){
+    window.location.href = buildMailto();
+  }
   else if(e.target.id === "downloadBtn"){
     downloadResultImage(e.target);
   }
