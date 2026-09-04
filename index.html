@@ -530,7 +530,6 @@ function renderResults(){
         <button class="primary" id="downloadBtn">Save my results as a image</button>
       </div>
       <div class="restart-row">
-        <button id="emailBtn">Email me the results (Experimental)</button>
         <span class="dot-sep">&middot;</span>
         <button id="restartBtn">Take it again</button>
       </div>
@@ -591,7 +590,7 @@ function downloadResultImage(btn){
   }).catch(()=>{
     btn.textContent = originalText;
     btn.disabled = false;
-    alert("Sorry, the picture couldn't be created. Try the email option instead.");
+    alert("Sorry, the picture couldn't be created.");
   });
 }
 
@@ -626,9 +625,7 @@ document.getElementById("app").addEventListener("click", (e)=>{
     }, 180);
     render();
   }
-  else if(e.target.id === "emailBtn"){
-    window.location.href = buildMailto();
-  }
+  
   else if(e.target.id === "downloadBtn"){
     downloadResultImage(e.target);
   }
