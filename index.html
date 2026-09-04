@@ -287,6 +287,14 @@ button.primary:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
   color:#3D3A33;
 }
 .discuss p:last-child{margin-bottom:0;}
+.email-row{
+  padding:0 36px 4px;
+  margin-top:6px;
+}
+@media (max-width:520px){
+  .email-row{padding:0 22px 4px;}
+}
+.email-row button.primary{margin-top:0;}
 .restart-row{
   text-align:center;
   margin:26px 0 6px;
@@ -513,11 +521,51 @@ function renderResults(){
           <p>Ask yourself: does it look like you? Sound like you? Feel like you? Would a stranger describe you this way? Content ideas that tend to fit this result: ${primaryContent}.</p>
         </div>
       </div>
+      <div class="email-row">
+        <button class="primary" id="emailBtn">Email me my results</button>
+      </div>
       <div class="restart-row">
         <button id="restartBtn">Take it again</button>
       </div>
     </div>
   `;
+}
+
+function buildMailto(){
+  const scores = {};
+  Object.keys(ARCHETYPES).forEach(k => scores[k]=0);
+  Object.keys(state.answers).forEach(idxStr=>{
+    const idx = parseInt(idxStr);
+    const type = QUESTIONS[idx].type;
+    scores[type] += state.answers[idx];
+  });
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topScore = sorted[0][1];
+  const primaries = sorted.filter(e=>e[1]===topScore).map(e=>e[0]);
+  const remaining = sorted.filter(e=>!primaries.includes(e[0]));
+  const secondaryScore = remaining.length ? remaining[0][1] : null;
+  const secondaries = secondaryScore!==null ? remaining.filter(e=>e[1]===secondaryScore).map(e=>e[0]) : [];
+
+  const titleParts = primaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]);
+  if(secondaries.length){
+    titleParts.push("+");
+    titleParts.push(secondaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]).join(" / "));
+  }
+  const resultTitle = titleParts.join(" ");
+
+  const blendKeys = [...primaries, ...secondaries];
+  let body = `My Brand Archetype result: ${resultTitle}\n\n`;
+  blendKeys.forEach(k=>{
+    body += `${ARCHETYPES[k].label}\n${ARCHETYPES[k].desc}\nContent that tends to fit: ${ARCHETYPES[k].content}\nWatch out for: ${ARCHETYPES[k].watch}\n\n`;
+  });
+  body += "All scores (out of 15):\n";
+  sorted.forEach(([key,score])=>{
+    body += `${ARCHETYPES[key].label.split(" — ")[0]}: ${score}\n`;
+  });
+
+  const subject = encodeURIComponent(`My Brand Archetype result: ${resultTitle}`);
+  const encodedBody = encodeURIComponent(body);
+  return `mailto:?subject=${subject}&body=${encodedBody}`;
 }
 
 function escapeHtml(str){
@@ -550,6 +598,9 @@ document.getElementById("app").addEventListener("click", (e)=>{
       }
     }, 180);
     render();
+  }
+  else if(e.target.id === "emailBtn"){
+    window.location.href = buildMailto();
   }
   else if(e.target.id === "restartBtn"){
     state = { screen:"intro", name:"", index:0, answers:{} };
