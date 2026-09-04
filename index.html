@@ -308,9 +308,12 @@ button.primary:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
   cursor:pointer;
   text-decoration:underline;
   text-underline-offset:3px;
+  padding:6px 4px;
 }
 .restart-row button:hover{color:var(--ink);}
+.dot-sep{color:var(--muted); font-size:13.5px;}
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 </head>
 <body>
 <div class="app" id="app"></div>
@@ -504,27 +507,31 @@ function renderResults(){
 
   return `
     <div>
-      <div class="result-header">
-        <div class="eyebrow">Your result</div>
-        <h2 class="result-title">${resultTitle}</h2>
-        <div class="result-sub">${namePrefix}toward this combination \u2014 that's a strength to build a brand around, not a box to fit into.</div>
-      </div>
-      <div class="result-body">
-        <div class="blend-desc">${blendDesc}</div>
+      <div id="resultCard">
+        <div class="result-header">
+          <div class="eyebrow">Your result</div>
+          <h2 class="result-title">${resultTitle}</h2>
+          <div class="result-sub">${namePrefix}toward this combination \u2014 that's a strength to build a brand around, not a box to fit into.</div>
+        </div>
+        <div class="result-body">
+          <div class="blend-desc">${blendDesc}</div>
 
-        <div class="bars-title">All eight scores</div>
-        ${barsHtml}
+          <div class="bars-title">All eight scores</div>
+          ${barsHtml}
 
-        <div class="discuss">
-          <div class="eyebrow">Now compare it to your actual brand</div>
-          <p>Pull up your Instagram or listing marketing right now. If a stranger scrolled through without knowing you, would they immediately pick up on ${primaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]).join(" and ")}?</p>
-          <p>Ask yourself: does it look like you? Sound like you? Feel like you? Would a stranger describe you this way? Content ideas that tend to fit this result: ${primaryContent}.</p>
+          <div class="discuss">
+            <div class="eyebrow">Now compare it to your actual brand</div>
+            <p>Pull up your Instagram or listing marketing right now. If a stranger scrolled through without knowing you, would they immediately pick up on ${primaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]).join(" and ")}?</p>
+            <p>Ask yourself: does it look like you? Sound like you? Feel like you? Would a stranger describe you this way? Content ideas that tend to fit this result: ${primaryContent}.</p>
+          </div>
         </div>
       </div>
       <div class="email-row">
-        <button class="primary" id="emailBtn">Email me my results</button>
+        <button class="primary" id="downloadBtn">Save my results as a image</button>
       </div>
       <div class="restart-row">
+        <button id="emailBtn">Email me the results (Experimental)</button>
+        <span class="dot-sep">&middot;</span>
         <button id="restartBtn">Take it again</button>
       </div>
     </div>
@@ -568,6 +575,26 @@ function buildMailto(){
   return `mailto:?subject=${subject}&body=${encodedBody}`;
 }
 
+function downloadResultImage(btn){
+  const node = document.getElementById("resultCard");
+  const originalText = btn.textContent;
+  btn.textContent = "Preparing your picture...";
+  btn.disabled = true;
+  html2canvas(node, {backgroundColor:"#F4EFE4", scale:2}).then(canvas=>{
+    const link = document.createElement("a");
+    const safeName = state.name.trim() ? state.name.trim().replace(/[^a-z0-9]+/gi,"-") : "my";
+    link.download = `${safeName}-brand-archetype-result.png`;
+    link.href = canvas.toDataURL("image/png");
+    link.click();
+    btn.textContent = originalText;
+    btn.disabled = false;
+  }).catch(()=>{
+    btn.textContent = originalText;
+    btn.disabled = false;
+    alert("Sorry, the picture couldn't be created. Try the email option instead.");
+  });
+}
+
 function escapeHtml(str){
   const d = document.createElement("div");
   d.innerText = str;
@@ -601,6 +628,9 @@ document.getElementById("app").addEventListener("click", (e)=>{
   }
   else if(e.target.id === "emailBtn"){
     window.location.href = buildMailto();
+  }
+  else if(e.target.id === "downloadBtn"){
+    downloadResultImage(e.target);
   }
   else if(e.target.id === "restartBtn"){
     state = { screen:"intro", name:"", index:0, answers:{} };
