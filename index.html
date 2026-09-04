@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Brand Archetype Assessment</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --ink:#23231F;
+  --parchment:#F4EFE4;
+  --card:#FFFDF8;
+  --brass:#A9793B;
+  --teal:#2E5E52;
+  --line:rgba(35,35,31,0.14);
+  --muted:#6B675C;
+
+  --sage:#2E5E52;
+  --explorer:#C1622D;
+  --hero:#9C2B2B;
+  --caregiver:#B5697A;
+  --creator:#6B4E8E;
+  --ruler:#A9793B;
+  --jester:#C99A1E;
+  --everyman:#46607A;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--parchment);
+  color:var(--ink);
+  font-family:'Inter',sans-serif;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px 16px;
+}
+.app{
+  width:100%;
+  max-width:640px;
+}
+h1,h2,h3{
+  font-family:'Fraunces',serif;
+  font-weight:600;
+  margin:0;
+  line-height:1.15;
+}
+.eyebrow{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:6px;
+  letter-spacing:0.01em;
+}
+.card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:6px;
+  padding:40px 36px;
+}
+@media (max-width:520px){
+  .card{padding:28px 22px;}
+}
+
+/* ---- INTRO ---- */
+.intro h1{font-size:34px;margin-bottom:14px;}
+.intro p{font-size:16px;line-height:1.6;color:#4A4740;margin:0 0 14px;}
+.scale-key{
+  display:flex;
+  justify-content:space-between;
+  font-size:12.5px;
+  color:var(--muted);
+  border-top:1px solid var(--line);
+  margin-top:22px;
+  padding-top:16px;
+}
+.name-row{margin-top:26px;}
+.name-row label{display:block;font-size:13px;color:var(--muted);margin-bottom:6px;}
+.name-row input{
+  width:100%;
+  font-family:'Inter',sans-serif;
+  font-size:16px;
+  padding:11px 12px;
+  border:1px solid var(--line);
+  border-radius:4px;
+  background:transparent;
+  color:var(--ink);
+}
+.name-row input:focus{outline:2px solid var(--brass);outline-offset:1px;}
+
+button.primary{
+  margin-top:26px;
+  width:100%;
+  background:var(--ink);
+  color:var(--parchment);
+  border:none;
+  border-radius:4px;
+  padding:15px 20px;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:opacity .15s ease;
+}
+button.primary:hover{opacity:0.88;}
+button.primary:focus-visible{outline:2px solid var(--brass);outline-offset:2px;}
+
+/* ---- QUIZ ---- */
+.progress-wrap{margin-bottom:22px;}
+.progress-track{
+  height:3px;
+  background:var(--line);
+  border-radius:2px;
+  overflow:hidden;
+}
+.progress-fill{
+  height:100%;
+  background:var(--brass);
+  transition:width .25s ease;
+}
+.progress-label{
+  font-size:12.5px;
+  color:var(--muted);
+  margin-top:9px;
+  font-variant-numeric:tabular-nums;
+}
+.question-text{
+  font-size:24px;
+  line-height:1.35;
+  margin:18px 0 32px;
+  min-height:96px;
+}
+.scale{
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-start;
+  gap:6px;
+}
+.scale-btn-col{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  flex:1;
+}
+.scale-btn{
+  width:100%;
+  aspect-ratio:1;
+  max-width:56px;
+  border-radius:50%;
+  border:1.5px solid var(--line);
+  background:var(--card);
+  cursor:pointer;
+  font-family:'Inter',sans-serif;
+  font-size:15px;
+  font-weight:600;
+  color:var(--ink);
+  transition:all .12s ease;
+}
+.scale-btn:hover{border-color:var(--brass);}
+.scale-btn.selected{
+  background:var(--ink);
+  border-color:var(--ink);
+  color:var(--parchment);
+  transform:scale(1.08);
+}
+.scale-caption{
+  font-size:11px;
+  color:var(--muted);
+  margin-top:9px;
+  text-align:center;
+  max-width:70px;
+  line-height:1.3;
+}
+.nav-row{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-top:34px;
+}
+.back-link{
+  font-family:'Inter',sans-serif;
+  font-size:14px;
+  color:var(--muted);
+  background:none;
+  border:none;
+  cursor:pointer;
+  padding:8px 0;
+  visibility:hidden;
+}
+.back-link.show{visibility:visible;}
+.back-link:hover{color:var(--ink);}
+
+/* ---- RESULTS ---- */
+.result-header{
+  background:var(--ink);
+  color:var(--parchment);
+  border-radius:6px 6px 0 0;
+  padding:38px 36px;
+  text-align:center;
+}
+.result-header .eyebrow{color:#C9C4B5;}
+.result-title{
+  font-size:38px;
+  color:var(--parchment);
+}
+@media (max-width:520px){ .result-title{font-size:29px;} }
+.result-sub{
+  font-size:15px;
+  color:#D9D4C6;
+  margin-top:10px;
+  max-width:420px;
+  margin-left:auto;
+  margin-right:auto;
+  line-height:1.5;
+}
+.result-body{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-top:none;
+  border-radius:0 0 6px 6px;
+  padding:34px 36px 8px;
+}
+@media (max-width:520px){
+  .result-header{padding:30px 22px;}
+  .result-body{padding:26px 22px 8px;}
+}
+.blend-desc{
+  font-size:15px;
+  line-height:1.65;
+  color:#3D3A33;
+  margin-bottom:30px;
+}
+.blend-desc b{font-weight:600;color:var(--ink);}
+.bars-title{
+  font-size:13px;
+  color:var(--muted);
+  margin-bottom:14px;
+  border-top:1px solid var(--line);
+  padding-top:22px;
+}
+.bar-row{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-bottom:11px;
+}
+.bar-name{
+  width:92px;
+  flex-shrink:0;
+  font-size:13.5px;
+  font-weight:500;
+}
+.bar-track{
+  flex:1;
+  height:9px;
+  background:var(--line);
+  border-radius:5px;
+  overflow:hidden;
+}
+.bar-fill{
+  height:100%;
+  border-radius:5px;
+  transition:width .5s ease;
+}
+.bar-score{
+  width:20px;
+  flex-shrink:0;
+  text-align:right;
+  font-size:13px;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.discuss{
+  margin-top:30px;
+  padding:20px 22px;
+  background:var(--parchment);
+  border-radius:5px;
+  border:1px solid var(--line);
+}
+.discuss .eyebrow{margin-bottom:8px;}
+.discuss p{
+  font-size:14.5px;
+  line-height:1.6;
+  margin:0 0 8px;
+  color:#3D3A33;
+}
+.discuss p:last-child{margin-bottom:0;}
+.restart-row{
+  text-align:center;
+  margin:26px 0 6px;
+}
+.restart-row button{
+  background:none;
+  border:none;
+  color:var(--muted);
+  font-family:'Inter',sans-serif;
+  font-size:13.5px;
+  cursor:pointer;
+  text-decoration:underline;
+  text-underline-offset:3px;
+}
+.restart-row button:hover{color:var(--ink);}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+const QUESTIONS = [
+  {q:"I feel most confident when I can help someone understand something that once felt complicated.", type:"sage"},
+  {q:"I'm energized by new places, new experiences, and discovering what's possible.", type:"explorer"},
+  {q:"I like setting a high standard and pushing myself to deliver an excellent result.", type:"hero"},
+  {q:"People tend to come to me when they need reassurance, support, or someone in their corner.", type:"caregiver"},
+  {q:"I'm happiest when I can put my own creative spin on something rather than following the usual formula.", type:"creator"},
+  {q:"I naturally take charge when a decision needs to be made.", type:"ruler"},
+  {q:"I like making people laugh and bringing a little levity to situations that can otherwise feel heavy.", type:"jester"},
+  {q:"I want people to feel comfortable around me quickly; I don't want to feel overly polished or distant.", type:"everyman"},
+  {q:"Before I recommend something, I want to understand the facts and the \u201cwhy\u201d behind it.", type:"sage"},
+  {q:"I dislike feeling boxed in; I value having the freedom to do things my own way.", type:"explorer"},
+  {q:"I'm motivated by challenges, especially when there's a clear goal to accomplish.", type:"hero"},
+  {q:"I measure success partly by whether people feel cared for and supported after working with me.", type:"caregiver"},
+  {q:"I notice aesthetics, details, and opportunities to make something more distinctive.", type:"creator"},
+  {q:"I'm comfortable being the person others look to for direction and confidence.", type:"ruler"},
+  {q:"My communication often includes humour, playfulness, or a willingness to be a little unexpected.", type:"jester"},
+  {q:"I value being genuine and relatable more than appearing impressive.", type:"everyman"},
+  {q:"I enjoy sharing useful information that helps people make smarter decisions.", type:"sage"},
+  {q:"I'm drawn to possibilities that feel exciting, different, or a little outside the ordinary.", type:"explorer"},
+  {q:"When something gets difficult, my instinct is to step up, solve it, and keep moving.", type:"hero"},
+  {q:"I naturally notice what people need and look for ways to make their experience easier.", type:"caregiver"},
+  {q:"I want my work to feel unmistakably like me, rather than looking like everyone else's.", type:"creator"},
+  {q:"I care about creating a sense of confidence, quality, and professionalism in everything I put my name on.", type:"ruler"},
+  {q:"I'd rather be memorable and entertaining than perfectly polished and predictable.", type:"jester"},
+  {q:"I want people to feel like they're talking to a real person, not a salesperson or a brand persona.", type:"everyman"}
+];
+
+const ARCHETYPES = {
+  sage:{
+    label:"Sage — The Expert",
+    color:"var(--sage)",
+    desc:"You build trust by teaching. People follow you because you make complicated things clear.",
+    content:"market education, myth-busting, straight answers to \u201cwhat should I know?\u201d",
+    watch:"can drift into sounding clinical or distant if it's facts without warmth."
+  },
+  explorer:{
+    label:"Explorer — The Pathfinder",
+    color:"var(--explorer)",
+    desc:"You make people want to come along. Your brand runs on discovery and possibility.",
+    content:"neighbourhood finds, lifestyle content, \u201ccome with me\u201d moments, unique properties",
+    watch:"can feel interesting without a clear point of view \u2014 exploration needs a destination."
+  },
+  hero:{
+    label:"Hero — The Achiever",
+    color:"var(--hero)",
+    desc:"Your brand says: give me the problem, I'll handle it. People trust you to get results.",
+    content:"before/after stories, negotiation wins, challenges overcome, client results",
+    watch:"can tip into feeling competitive or self-focused instead of client-focused."
+  },
+  caregiver:{
+    label:"Caregiver — The Advocate",
+    color:"var(--caregiver)",
+    desc:"People feel taken care of around you. Your brand runs on trust, support, and service.",
+    content:"client stories, process breakdowns, \u201cwhat happens next\u201d guides, behind-the-scenes care",
+    watch:"can give away so much expertise gets lost \u2014 caring and being the expert can coexist."
+  },
+  creator:{
+    label:"Creator — The Original",
+    color:"var(--creator)",
+    desc:"Your brand needs to look and feel unmistakably like you. Originality is the whole point.",
+    content:"design-forward listing marketing, photo/video, distinctive formats, original ideas",
+    watch:"can produce beautiful work that's missing a clear business purpose."
+  },
+  ruler:{
+    label:"Ruler — The Authority",
+    color:"var(--ruler)",
+    desc:"Your brand communicates \u201cI've got this.\u201d People come to you for standards and leadership.",
+    content:"strong opinions, market perspective, systems and standards, premium positioning",
+    watch:"can come across as intimidating or overly polished if there's no warmth underneath."
+  },
+  jester:{
+    label:"Jester — The Entertainer",
+    color:"var(--jester)",
+    desc:"People remember you because they enjoy you. Personality and humour are your currency.",
+    content:"real estate observations, relatable humour, unexpected takes, trend content used well",
+    watch:"can be entertaining without building authority \u2014 fun needs a foundation."
+  },
+  everyman:{
+    label:"Everyman — The Real One",
+    color:"var(--everyman)",
+    desc:"Your brand says \u201cI'm a real person, just like you.\u201d Authenticity is what draws people in.",
+    content:"everyday stories, community and local life, honest, unpolished moments",
+    watch:"can be relatable but hard to tell apart from everyone else without a sharper edge."
+  }
+};
+
+let state = { screen:"intro", name:"", index:0, answers:{} };
+
+function render(){
+  const app = document.getElementById("app");
+  if(state.screen === "intro") app.innerHTML = renderIntro();
+  else if(state.screen === "quiz") app.innerHTML = renderQuiz();
+  else app.innerHTML = renderResults();
+}
+
+function renderIntro(){
+  return `
+    <div class="card intro">
+      <div class="eyebrow">Brand Lab — Session 1</div>
+      <h1>The Brand Archetype Assessment</h1>
+      <p>Your brand isn't just what you look like online. It's how people experience you.</p>
+      <p>This is a quick self-assessment to surface the brand archetypes that feel most natural to you \u2014 no right or wrong answers, don't overthink it. Go with what feels most like you.</p>
+      <p>Takes about 3 minutes. 24 quick questions.</p>
+      <div class="name-row">
+        <label for="nameInput">Your name (optional \u2014 shows on your result)</label>
+        <input id="nameInput" type="text" placeholder="e.g. Rachael" value="${escapeHtml(state.name)}">
+      </div>
+      <div class="scale-key">
+        <span>1 &nbsp;Strongly disagree</span>
+        <span>5 &nbsp;Strongly agree</span>
+      </div>
+      <button class="primary" id="startBtn">Start the assessment</button>
+    </div>
+  `;
+}
+
+function renderQuiz(){
+  const i = state.index;
+  const total = QUESTIONS.length;
+  const pct = Math.round((i/total)*100);
+  const current = state.answers[i];
+  let scaleHtml = "";
+  for(let v=1; v<=5; v++){
+    const sel = current === v ? "selected" : "";
+    const caption = v===1 ? "Strongly disagree" : v===5 ? "Strongly agree" : "";
+    scaleHtml += `
+      <div class="scale-btn-col">
+        <button class="scale-btn ${sel}" data-value="${v}">${v}</button>
+        <div class="scale-caption">${caption}</div>
+      </div>`;
+  }
+  return `
+    <div class="card">
+      <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" style="width:${pct}%"></div></div>
+        <div class="progress-label">Question ${i+1} of ${total}</div>
+      </div>
+      <div class="question-text">${QUESTIONS[i].q}</div>
+      <div class="scale">${scaleHtml}</div>
+      <div class="nav-row">
+        <button class="back-link ${i>0 ? 'show':''}" id="backBtn">&larr; Back</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderResults(){
+  const scores = {};
+  Object.keys(ARCHETYPES).forEach(k => scores[k]=0);
+  Object.keys(state.answers).forEach(idxStr=>{
+    const idx = parseInt(idxStr);
+    const type = QUESTIONS[idx].type;
+    scores[type] += state.answers[idx];
+  });
+  const sorted = Object.entries(scores).sort((a,b)=>b[1]-a[1]);
+  const topScore = sorted[0][1];
+  const primaries = sorted.filter(e=>e[1]===topScore).map(e=>e[0]);
+  const remaining = sorted.filter(e=>!primaries.includes(e[0]));
+  const secondaryScore = remaining.length ? remaining[0][1] : null;
+  const secondaries = secondaryScore!==null ? remaining.filter(e=>e[1]===secondaryScore).map(e=>e[0]) : [];
+
+  const titleParts = primaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]);
+  if(secondaries.length){
+    titleParts.push("+");
+    titleParts.push(secondaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]).join(" / "));
+  }
+  const resultTitle = titleParts.join(" ");
+
+  const namePrefix = state.name.trim() ? escapeHtml(state.name.trim()) + "'s brand leans " : "Your brand leans ";
+
+  const blendKeys = [...primaries, ...secondaries];
+  const blendDesc = blendKeys.map(k=>`<b>${ARCHETYPES[k].label}</b> \u2014 ${ARCHETYPES[k].desc}`).join("<br><br>");
+
+  let barsHtml = "";
+  sorted.forEach(([key,score])=>{
+    const pct = Math.round((score/15)*100);
+    barsHtml += `
+      <div class="bar-row">
+        <div class="bar-name">${ARCHETYPES[key].label.split(" — ")[0]}</div>
+        <div class="bar-track"><div class="bar-fill" style="width:${pct}%; background:${ARCHETYPES[key].color}"></div></div>
+        <div class="bar-score">${score}</div>
+      </div>`;
+  });
+
+  const primaryContent = primaries.map(k=>ARCHETYPES[k].content).join("; ");
+
+  return `
+    <div>
+      <div class="result-header">
+        <div class="eyebrow">Your result</div>
+        <h2 class="result-title">${resultTitle}</h2>
+        <div class="result-sub">${namePrefix}toward this combination \u2014 that's a strength to build a brand around, not a box to fit into.</div>
+      </div>
+      <div class="result-body">
+        <div class="blend-desc">${blendDesc}</div>
+
+        <div class="bars-title">All eight scores</div>
+        ${barsHtml}
+
+        <div class="discuss">
+          <div class="eyebrow">Now compare it to your actual brand</div>
+          <p>Pull up your Instagram or listing marketing right now. If a stranger scrolled through without knowing you, would they immediately pick up on ${primaries.map(k=>ARCHETYPES[k].label.split(" — ")[0]).join(" and ")}?</p>
+          <p>Ask yourself: does it look like you? Sound like you? Feel like you? Would a stranger describe you this way? Content ideas that tend to fit this result: ${primaryContent}.</p>
+        </div>
+      </div>
+      <div class="restart-row">
+        <button id="restartBtn">Take it again</button>
+      </div>
+    </div>
+  `;
+}
+
+function escapeHtml(str){
+  const d = document.createElement("div");
+  d.innerText = str;
+  return d.innerHTML;
+}
+
+document.getElementById("app").addEventListener("click", (e)=>{
+  if(e.target.id === "startBtn"){
+    const nameVal = document.getElementById("nameInput").value;
+    state.name = nameVal;
+    state.screen = "quiz";
+    state.index = 0;
+    render();
+  }
+  else if(e.target.id === "backBtn"){
+    if(state.index > 0){ state.index--; render(); }
+  }
+  else if(e.target.classList.contains("scale-btn")){
+    const val = parseInt(e.target.dataset.value);
+    state.answers[state.index] = val;
+    setTimeout(()=>{
+      if(state.index < QUESTIONS.length - 1){
+        state.index++;
+        render();
+      } else {
+        state.screen = "results";
+        render();
+      }
+    }, 180);
+    render();
+  }
+  else if(e.target.id === "restartBtn"){
+    state = { screen:"intro", name:"", index:0, answers:{} };
+    render();
+  }
+});
+
+render();
+</script>
+</body>
+</html>
